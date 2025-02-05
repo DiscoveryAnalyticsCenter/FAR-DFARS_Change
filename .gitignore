@@ -1,0 +1,26 @@
+# Node modules (dependencies installed via npm/yarn/pnpm)
+node_modules
+
+# Environment variables (contains sensitive info like API keys)
+.env
+.env.local
+.env.*.local
+
+# Next.js build output (generated files)
+.next
+out
+
+# Logs
+npm-debug.log*
+
+# Editor-specific files
+.vscode
+.idea
+.DS_Store
+
+# TypeScript cache (if using TypeScript)
+*.tsbuildinfo
+
+# Testing coverage reports
+coverage
+
