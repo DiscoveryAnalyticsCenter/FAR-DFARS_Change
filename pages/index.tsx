@@ -7,6 +7,7 @@ import { useState } from "react";
 import {Listbox, ListboxItem} from "@heroui/listbox"
 import { Proposal, ProposedRuleChange } from "../types";
 import {Progress} from "@heroui/progress"
+import { ThemeSwitch } from "@/components/theme-switch";
 
 export async function getServerSideProps(ctx: any) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/proposals`);
