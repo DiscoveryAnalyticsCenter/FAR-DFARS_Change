@@ -23,15 +23,6 @@ type ProposedRuleChangeAttributes = {
   objectId: string
 }
 
-export type ProposedRuleChange = {
-  id: string,
-  type: string,
-  attributes: ProposedRuleChangeAttributes,
-  links: {
-    self: string
-  }
-}
-
 type FileFormat = {
   fileUrl: string;
   format: string;
@@ -133,3 +124,11 @@ export type Proposal = {
   attributes: DocumentAttributes;
   relationships: DocumentRelationships;
 };
+
+export type ProposedRuleChangeData = {
+  proposals: Proposal[],
+  pageNumber: number,
+  hasNextPage: boolean,
+  hasPrevPage: boolean,
+  totalDocuments: number
+}

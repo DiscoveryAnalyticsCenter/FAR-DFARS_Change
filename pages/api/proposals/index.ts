@@ -15,6 +15,5 @@ export default async function Handler(req: NextApiRequest, res: NextApiResponse)
     hasNextPage: meta.hasNextPage,
     hasPrevPage: meta.hasPreviousPage
   }
-  console.log(returnData)
   res.status(200).json(returnData);
 }
