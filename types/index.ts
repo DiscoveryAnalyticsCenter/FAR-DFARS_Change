@@ -132,3 +132,8 @@ export type ProposedRuleChangeData = {
   hasPrevPage: boolean,
   totalDocuments: number
 }
+
+export type BasicProposalData = {
+  id: string,
+  title: string
+}

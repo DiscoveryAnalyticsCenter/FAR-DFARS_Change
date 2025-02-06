@@ -5,10 +5,11 @@ import {Button} from "@heroui/button"
 import { SearchIcon } from "../components/icons";
 import { useState } from "react";
 import {Listbox, ListboxItem} from "@heroui/listbox"
-import { Proposal, ProposedRuleChangeData } from "../types";
+import { BasicProposalData, Proposal, ProposedRuleChangeData } from "../types";
 import {Progress} from "@heroui/progress"
 import { Switch } from "@heroui/switch";
 import { Spinner } from "@heroui/spinner"
+import ProposalView from "@/components/proposalView";
 
 export async function getServerSideProps(ctx: any) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/proposals`);
@@ -24,19 +25,17 @@ export async function getServerSideProps(ctx: any) {
 let lastPageLoaded: number = 1;
 
 export default function IndexPage(props: {firstProposalsPage: any}) {
-  const [selectedProposal, setSelectedProposal] = useState<Proposal | "loading" | null>(null);
+  const [selectedProposal, setSelectedProposal] = useState<BasicProposalData | null>(null);
   const [proposedRuleChangeData, setProposedRuleChangeData] = useState<ProposedRuleChangeData>(props.firstProposalsPage)
-  const [selectedProposalTitle, setSelectedProposalTitle] = useState<string | null>(null)
   const [titleViewEnabled, setTitleViewEnabled] = useState<boolean>(true);
   const [proposalPageLoading, setProposalPageLoading] = useState<boolean>(false);
 
 
   async function fetchProposal(id: string, title: string) {
-    setSelectedProposal("loading")
-    setSelectedProposalTitle(title)
+    setSelectedProposal({id, title});
     const res = await fetch(`/api/proposals/${id}`)
     const proposal = await res.json();
-    setSelectedProposal(proposal)
+    // setSelectedProposal(proposal)
   }
   
   /**
@@ -110,17 +109,11 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
             </div>
           }
           {
-            selectedProposal === "loading" &&
-            <div className="w-full h-full flex flex-col justify-center items-center">
-              <div>{selectedProposalTitle}</div>
-              <Progress isIndeterminate aria-label="Loading..." className="max-w-md mt-5" size="sm" />
-            </div>
-          }
-          {
-            selectedProposal && selectedProposal !== "loading" &&
-            <div className="w-full h-full flex flex-col mx-5">
-              <div className="text-2xl"><b>{selectedProposal.attributes.title}</b></div>
-            </div>
+            selectedProposal &&
+            // <div className="w-full h-full flex flex-col mx-5">
+            //   <div className="text-2xl"><b>{selectedProposal.attributes.title}</b></div>
+            // </div>
+            <ProposalView basicData={selectedProposal} onProposalLoad={() => console.log()}/>
           }
         </div>
       </div>
