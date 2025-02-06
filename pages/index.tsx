@@ -65,7 +65,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
         <div id="search-column" className="flex flex-col h-full w-fit mr-5 max-h-[calc(100vh-32px-64px-64px)]">
           <div className="flex mb-5 px-[12px]">
             <Input className="mr-2 " placeholder="Search"/>
-            <Button isIconOnly>
+            <Button isIconOnly disabled>
               <SearchIcon/>
             </Button>
           </div>
@@ -113,7 +113,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
             // <div className="w-full h-full flex flex-col mx-5">
             //   <div className="text-2xl"><b>{selectedProposal.attributes.title}</b></div>
             // </div>
-            <ProposalView basicData={selectedProposal} onProposalLoad={() => console.log()}/>
+            <ProposalView basicData={selectedProposal}/>
           }
         </div>
       </div>
