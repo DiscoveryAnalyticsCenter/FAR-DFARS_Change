@@ -14,7 +14,6 @@ export async function loadModel() {
 }
 
 export async function getCommentEmbeddings(comments: string[]) {
-  console.log(model)
   const m = await loadModel();
   const batchSize: number = 32;
   const embeddings = [];

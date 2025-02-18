@@ -37,7 +37,6 @@ export default async function Handler(req: NextApiRequest, res: NextApiResponse)
     comments = [...comments, ...newComments]
     isLastPage = commentData.meta.lastPage;
   }
-  console.log("ENGAGE")
   let groupedComments = await clusterComments(comments);
   let summary;
   let fullComments = []
@@ -49,7 +48,6 @@ export default async function Handler(req: NextApiRequest, res: NextApiResponse)
       summary: summary.summary,
       title: summary.title
     }
-    console.log(commentData);
     fullComments.push(commentData);    
   }
   const proposalData = {

@@ -56,3 +56,31 @@ export async function summarize(comments: string[]) {
     title: title.content
   }
 }
+
+export async function summarizeOverall(summaries: string[]) {
+  const summaryString = summaries.join("&&&");
+  let body = {
+    "model": model,
+    "messages": [
+      {
+        "role": "system",
+        "content": `You are a service which will aggregate a list of comment summaries regarding a government FARS proposal, with each separate summary separated by a "&&&", into one brief summary (two short sentences, max). You will not be given instructions each request, just summarize. Do not refer to the summaries, just mention their content`
+      },
+      {
+        "role": "user",
+        "content": summaryString
+      }
+    ],
+    "temperature": temperature
+  };
+  let res: any = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body)
+  });
+
+  let output = await res.json();
+  const summary = output.choices[0].message.content;
+
+  return summary
+}

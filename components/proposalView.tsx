@@ -10,12 +10,26 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
   const [proposal, setProposal] = useState<Proposal | null>(null) 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedCommentGroupIndex, setSelectedCommentGroupIndex] = useState<number>(-1);
+  const [mainSummary, setMainSummary] = useState<string>();
 
   useEffect(() => {
     async function fetchProposal() {
-      const res = await fetch(`/api/proposals/${props.basicData.id}`)
+      let res = await fetch(`/api/proposals/${props.basicData.id}`)
       const propos = await res.json();
-      setProposal(propos)
+      let summaries: string[] = [];
+      propos.comments.forEach((commentGroup: any) => {
+        summaries.push(commentGroup.summary);
+      });
+      res = await fetch("/api/proposals/summarizeComments", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'  // ✅ Must be application/json
+        },
+        body: JSON.stringify({summaries: summaries})
+      });
+      const summary = await res.json();
+      setMainSummary(summary);
+      setProposal(propos);
     }
     
     fetchProposal();
@@ -34,7 +48,6 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
     </div>
     );
   }
-  console.log(proposal?.comments[selectedCommentGroupIndex]?.comments)
   return (
     <div className="w-full h-full flex flex-col mx-5">
       <Modal isOpen={modalOpen} size="5xl" onClose={() => setModalOpen(false)}>
@@ -71,9 +84,9 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
 
       <Accordion variant="shadow" className="mb-5" defaultExpandedKeys={["sole"]}>
         <AccordionItem title="Comment Summary" key="sole">
-          <div>Content Summary</div>
-          <Divider className="my-3"/>
-          <div>Revision Suggestions:</div>
+          <p className="mb-3">{mainSummary}</p>
+          {/* <Divider className="my-3"/>
+          <div>Revision Suggestions:</div> */}
         </AccordionItem>
       </Accordion>
 

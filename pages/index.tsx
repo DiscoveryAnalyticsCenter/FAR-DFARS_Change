@@ -73,13 +73,10 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
     setProposalPageLoading(true);
     const res = await fetch(`/api/proposals/search?query=${searchQuery}`);
     let proposalData = await res.json();
-    console.log(proposalData)
     setProposedRuleChangeData(proposalData);
     setProposalPageLoading(false);
   }
 
-  //console.log(proposedRuleChangeData)
-  
   return (
     <DefaultLayout>
       <div className="grid grid-cols-[auto_auto_1fr] h-full pb-[64px] max-h-[calc(100vh-32px-64px)]">
