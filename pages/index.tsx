@@ -3,13 +3,14 @@ import {Input} from "@heroui/input"
 import {Divider} from "@heroui/divider";
 import {Button} from "@heroui/button"
 import { SearchIcon } from "../components/icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {Listbox, ListboxItem} from "@heroui/listbox"
 import { BasicProposalData, Proposal, ProposedRuleChangeData } from "../types";
 import {Progress} from "@heroui/progress"
 import { Switch } from "@heroui/switch";
 import { Spinner } from "@heroui/spinner"
 import ProposalView from "@/components/proposalView";
+import Axios from "axios";
 
 export async function getServerSideProps(ctx: any) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/proposals`);
@@ -29,13 +30,15 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
   const [proposedRuleChangeData, setProposedRuleChangeData] = useState<ProposedRuleChangeData>(props.firstProposalsPage)
   const [titleViewEnabled, setTitleViewEnabled] = useState<boolean>(true);
   const [proposalPageLoading, setProposalPageLoading] = useState<boolean>(false);
-
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  
   async function fetchProposal(id: string, title: string) {
+    
     setSelectedProposal({id, title});
-    const res = await fetch(`/api/proposals/${id}`)
-    const proposal = await res.json();
-    // setSelectedProposal(proposal)
+    // const res = await fetch(`/api/proposals/${id}`)
+    // const res = await Axios.get(`/api/proposals/${id}`);
+    // const proposal = await res.data;
+    // // setSelectedProposal(proposal)
   }
   
   /**
@@ -58,14 +61,32 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
     setProposalPageLoading(false);
     lastPageLoaded = page;
   }
+
+  async function search() {
+    setProposedRuleChangeData({
+      proposals: [],
+      totalDocuments: 0,
+      pageNumber: -1,
+      hasNextPage: false,
+      hasPrevPage: false
+    })
+    setProposalPageLoading(true);
+    const res = await fetch(`/api/proposals/search?query=${searchQuery}`);
+    let proposalData = await res.json();
+    console.log(proposalData)
+    setProposedRuleChangeData(proposalData);
+    setProposalPageLoading(false);
+  }
+
+  //console.log(proposedRuleChangeData)
   
   return (
     <DefaultLayout>
       <div className="grid grid-cols-[auto_auto_1fr] h-full pb-[64px] max-h-[calc(100vh-32px-64px)]">
         <div id="search-column" className="flex flex-col h-full w-fit mr-5 max-h-[calc(100vh-32px-64px-64px)]">
           <div className="flex mb-5 px-[12px]">
-            <Input className="mr-2 " placeholder="Search"/>
-            <Button isIconOnly disabled>
+            <Input className="mr-2 " placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)}/>
+            <Button isIconOnly onPress={() => search()}>
               <SearchIcon/>
             </Button>
           </div>
@@ -74,14 +95,18 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
             <Switch defaultSelected onValueChange={(value) => setTitleViewEnabled(value)}/>
           </div>
           <div className="flex flex-col max-h-[calc(100%-110px)]">
+            {
+              proposedRuleChangeData &&
             <div className="mx-[12px] text-xs mb-2">
               <i>Viewing {proposedRuleChangeData.proposals.length}/{proposedRuleChangeData.totalDocuments}</i>
             </div>
+            }
             <Listbox className="max-h-[92%] overflow-y-scroll mb-auto">
               <>
                 {
-                  proposedRuleChangeData.proposals.map((proposal: Proposal) => 
-                    <ListboxItem className="max-w-[262px]" onPress={(e) => fetchProposal(proposal.id, proposal.attributes.title)}>
+                  proposedRuleChangeData &&
+                  proposedRuleChangeData.proposals.map((proposal: Proposal, index: number) => 
+                    <ListboxItem key={index} className="max-w-[262px]" onPress={(e) => fetchProposal(proposal.id, proposal.attributes.title)}>
                       {
                         titleViewEnabled ? cleanTitle(proposal.attributes.title) : proposal.id
                       }

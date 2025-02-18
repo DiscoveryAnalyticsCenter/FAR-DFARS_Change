@@ -123,6 +123,7 @@ export type Proposal = {
   links: DocumentLinks;
   attributes: DocumentAttributes;
   relationships: DocumentRelationships;
+  comments?: any
 };
 
 export type ProposedRuleChangeData = {
@@ -137,3 +138,21 @@ export type BasicProposalData = {
   id: string,
   title: string
 }
+
+export type ProposalComment = {
+  id: string;
+  type: "comments";
+  attributes: {
+      documentType: string;
+      lastModifiedDate: string; // ISO Date string
+      highlightedContent: string;
+      withdrawn: boolean;
+      agencyId: string;
+      title: string;
+      objectId: string;
+      postedDate: string; // ISO Date string
+  };
+  links: {
+      self: string;
+  };
+};
