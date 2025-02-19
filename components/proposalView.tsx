@@ -126,6 +126,15 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
             </CardHeader>
             <CardBody>
               <p>{stripHTML(group.comments)}</p>
+              {
+                group.revisionSuggestion.length > 0 &&
+                <>
+                  <Divider className="my-3"/>
+                  <div>Revision Suggestions:</div>
+                  <br className="mb-3"/>
+                  <div className="mb-3">{group.revisionSuggestion}</div>
+                </>
+              }
             </CardBody>
           </Card>
         )
