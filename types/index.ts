@@ -123,6 +123,7 @@ export type Proposal = {
   links: DocumentLinks;
   attributes: DocumentAttributes;
   relationships: DocumentRelationships;
+  numComments: number
   comments?: any
 };
 

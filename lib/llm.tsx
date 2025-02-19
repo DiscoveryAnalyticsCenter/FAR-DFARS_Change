@@ -53,7 +53,7 @@ export async function summarize(comments: string[]) {
 
   return {
     summary: summary.content,
-    title: title.content
+    title: title.content.replace(/"/g, '')
   }
 }
 
@@ -83,4 +83,33 @@ export async function summarizeOverall(summaries: string[]) {
   const summary = output.choices[0].message.content;
 
   return summary
+}
+
+export async function generateRevision(summary: string) {
+  let body = {
+    "model": model,
+    "messages": [
+      {
+        "role": "system",
+        "content": `You will be given a comment that was made on a proposed rule for the Federal Aquisition Regulation rules. 
+        The comment details a problem that a reader had with the proposal. Please suggest a brief (no more than 5 short sentences) revision which could resolve the problem outlined by the comment. 
+        Format your response as specific revisions which could be made to current Federal Aquisition Rules, referring to the document where appropiate. Your response should NOT be in first-person,
+        but rather should only discuss the specific changes needed to be made. If the comment seems to refer to an external document, return ONLY an empty string.`
+      },
+      {
+        "role": "user",
+        "content": summary
+      }
+    ],
+    "temperature": temperature
+  };
+  let res: any = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body)
+  });
+
+  let output = await res.json();
+
+  return output.choices[0].message.content;
 }

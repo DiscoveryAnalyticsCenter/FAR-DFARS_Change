@@ -5,6 +5,8 @@ import {Accordion,AccordionItem} from "@heroui/accordion"
 import { Button } from "@heroui/button";
 import {Divider} from "@heroui/divider"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { stripHTML } from "@/lib/utils";
 
 export default function ProposalView(props: {basicData: BasicProposalData}) {
   const [proposal, setProposal] = useState<Proposal | null>(null) 
@@ -17,6 +19,7 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
       let res = await fetch(`/api/proposals/${props.basicData.id}`)
       const propos = await res.json();
       let summaries: string[] = [];
+      console.log(propos)
       propos.comments.forEach((commentGroup: any) => {
         summaries.push(commentGroup.summary);
       });
@@ -54,12 +57,12 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">All Comments in Comment Group {selectedCommentGroupIndex + 1}: {proposal.comments[selectedCommentGroupIndex].title} </ModalHeader>
               <ModalBody>
                 {
                   proposal.comments[selectedCommentGroupIndex].comments.map((comment: string, index: number) => 
                     <>
-                      <p>{comment}</p>
+                      <p className="my-3">{comment}</p>
                       {
                         index < proposal.comments[selectedCommentGroupIndex].comments.length - 1 &&
                         <Divider/>
@@ -71,9 +74,6 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
                 </Button>
               </ModalFooter>
             </>
@@ -89,16 +89,24 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
           <div>Revision Suggestions:</div> */}
         </AccordionItem>
       </Accordion>
-
-      <Accordion variant="splitted" className="!px-0 max-h-[72vh] overflow-y-scroll !pr-2">
+      {
+        proposal.numComments > 5 &&
+        <Accordion variant="splitted" className="!px-0 max-h-[72vh] !pr-2">
         {
           proposal.comments!.map((group: any, index: number) =>
-            <AccordionItem title={`Comment Group ${index+1}: ${group.title.substring(1, group.title.length-1)}`} className="flex flex-col">
+            <AccordionItem title={`Comment Group ${index+1}: ${group.title}`} className="flex flex-col">
               <div>Content Summary:</div>
               <br/>
-              <div className="mb-3">{group.summary}</div>
-              {/* <Divider className="my-3"/>
-              <div>Revision Suggestions:</div> */}
+              <div className="mb-3">{stripHTML(group.summary)}</div>
+              {
+                group.revisionSuggestion.length > 0 &&
+                <>
+                  <Divider className="mb-3"/>
+                  <div>Revision Suggestions:</div>
+                  <br/>
+                  <div className="mb-3">{group.revisionSuggestion}</div>
+                </>
+              }
               <div className="flex justify-end">
                 <Button variant="ghost" onPress={() => openCommentsModal(index)}>View All Comments</Button>
               </div>
@@ -106,6 +114,22 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
           )
         }
       </Accordion>
+      }
+      {
+        proposal.numComments <= 5 &&
+        proposal.comments!.map((group: any, index: number) =>
+          <Card className="mb-3">
+            <CardHeader className="flex gap-3">
+              <div className="flex flex-col">
+                <p className="text-md">Comment {index + 1}</p>
+              </div>
+            </CardHeader>
+            <CardBody>
+              <p>{stripHTML(group.comments)}</p>
+            </CardBody>
+          </Card>
+        )
+      }
     </div>
   );
 }

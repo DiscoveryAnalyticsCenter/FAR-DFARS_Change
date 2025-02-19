@@ -31,10 +31,12 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
   const [titleViewEnabled, setTitleViewEnabled] = useState<boolean>(true);
   const [proposalPageLoading, setProposalPageLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  
+  const [proposalKey, setProposalKey] = useState<number>(0);
+
   async function fetchProposal(id: string, title: string) {
     
     setSelectedProposal({id, title});
+    setProposalKey(prevKey => prevKey + 1);
     // const res = await fetch(`/api/proposals/${id}`)
     // const res = await Axios.get(`/api/proposals/${id}`);
     // const proposal = await res.data;
@@ -135,7 +137,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
             // <div className="w-full h-full flex flex-col mx-5">
             //   <div className="text-2xl"><b>{selectedProposal.attributes.title}</b></div>
             // </div>
-            <ProposalView basicData={selectedProposal}/>
+            <ProposalView key={proposalKey} basicData={selectedProposal}/>
           }
         </div>
       </div>

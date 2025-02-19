@@ -19,13 +19,13 @@ export async function getCommentEmbeddings(comments: string[]) {
   const embeddings = [];
   for (let i: number = 0; i < comments.length; i += batchSize) {
     const batch = comments.slice (i, i + batchSize);
-    const batchEmbeddings = await model.embed(batch);
+    const batchEmbeddings = await m.embed(batch);
     embeddings.push(...batchEmbeddings.arraySync())
   }
   return embeddings;
 }
 
-export async function clusterComments(comments: string[], numClusters: number = 6) {
+export async function clusterComments(comments: string[], numClusters: number = 5) {
   const embeddings = await getCommentEmbeddings(comments);
   const clusters = kmeans(embeddings, numClusters, {});
   const groups = groupItemsByCluster(comments, clusters.clusters);
@@ -46,11 +46,5 @@ function groupItemsByCluster(items: string[], clusterLabels: number[]) {
       grouped[clusterId].push(item);
   });
 
-  const groups = [];
-
-  for (let i: number = 0; i < clusterLabels.length; i++) {
-    groups.push(grouped[clusterLabels[i]])
-  }
-
-  return groups;
+  return Object.values(grouped);
 }
