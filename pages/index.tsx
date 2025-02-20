@@ -2,15 +2,14 @@ import DefaultLayout from "@/layouts/default";
 import {Input} from "@heroui/input"
 import {Divider} from "@heroui/divider";
 import {Button} from "@heroui/button"
-import { SearchIcon } from "../components/icons";
-import { useRef, useState } from "react";
+import { SearchIcon, PlusIcon } from "../components/icons";
+import { useState } from "react";
 import {Listbox, ListboxItem} from "@heroui/listbox"
 import { BasicProposalData, Proposal, ProposedRuleChangeData } from "../types";
-import {Progress} from "@heroui/progress"
 import { Switch } from "@heroui/switch";
 import { Spinner } from "@heroui/spinner"
 import ProposalView from "@/components/proposalView";
-import Axios from "axios";
+import FARGenerator from "@/components/fargenerator"
 
 export async function getServerSideProps(ctx: any) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/proposals`);
@@ -32,9 +31,9 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
   const [proposalPageLoading, setProposalPageLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [proposalKey, setProposalKey] = useState<number>(0);
+  const [generatorOpen, setGeneratorOpen] = useState<boolean>(false);
 
   async function fetchProposal(id: string, title: string) {
-    
     setSelectedProposal({id, title});
     setProposalKey(prevKey => prevKey + 1);
     // const res = await fetch(`/api/proposals/${id}`)
@@ -42,7 +41,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
     // const proposal = await res.data;
     // // setSelectedProposal(proposal)
   }
-  
+  console.log(proposedRuleChangeData)
   /**
    * Remove boilerplate prefixes from FAR titles.
    * @param title 
@@ -81,6 +80,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
 
   return (
     <DefaultLayout>
+      <FARGenerator isOpen={generatorOpen} onOpenChange={() => setGeneratorOpen(false)}/>
       <div className="grid grid-cols-[auto_auto_1fr] h-full pb-[64px] max-h-[calc(100vh-32px-64px)]">
         <div id="search-column" className="flex flex-col h-full w-fit mr-5 max-h-[calc(100vh-32px-64px-64px)]">
           <div className="flex mb-5 px-[12px]">
@@ -89,22 +89,23 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
               <SearchIcon/>
             </Button>
           </div>
+          <Button startContent={<PlusIcon/>} variant="ghost" className="mb-5 mx-[12px]" onPress={() => setGeneratorOpen(true)}>Generate Proposal</Button>
           <div className="flex !justify-start !items-center px-[12px] mb-5">
             <span className="mr-5">View Proposal Titles</span>
             <Switch defaultSelected onValueChange={(value) => setTitleViewEnabled(value)}/>
           </div>
-          <div className="flex flex-col max-h-[calc(100%-110px)]">
+          <div className="flex flex-col max-h-[calc(100%-180px)]">
             {
               proposedRuleChangeData &&
             <div className="mx-[12px] text-xs mb-2">
-              <i>Viewing {proposedRuleChangeData.proposals.length}/{proposedRuleChangeData.totalDocuments}</i>
+              <i>Viewing {proposedRuleChangeData.proposals?.length}/{proposedRuleChangeData.totalDocuments}</i>
             </div>
             }
             <Listbox className="max-h-[92%] overflow-y-scroll mb-auto">
               <>
                 {
                   proposedRuleChangeData &&
-                  proposedRuleChangeData.proposals.map((proposal: Proposal, index: number) => 
+                  proposedRuleChangeData.proposals?.map((proposal: Proposal, index: number) => 
                     <ListboxItem key={index} className="max-w-[262px]" onPress={(e) => fetchProposal(proposal.id, proposal.attributes.title)}>
                       {
                         titleViewEnabled ? cleanTitle(proposal.attributes.title) : proposal.id
