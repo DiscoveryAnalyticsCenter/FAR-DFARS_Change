@@ -1,0 +1,6 @@
+# FAR-DFARS_Change
+AI-based DPCAP FAR/DFARS change support tool based on the yearly NDAA
+
+The Virginia Tech Sanghani Center research team worked with the Defense Pricing, Contracting, and Acquisition Policy (DPCAP) office to review and document the Federal Acquisition Regulation (FAR) and Defense Federal Acquisition Regulation Supplement (DFARS) change process. After review the research team proposed potential implementations of artificial intelligence (AI) tools into the process pipeline that could increase the efficiency and accuracy of the process. The research team also provided the limitations of these techniques and examples of using these tools to complete the steps defined in the FAR/DFARS change process. Finally, the research team created a custom-built prototype tool specifically for the FAR/DFARS change process to demonstrate the potential to integrate the proposed tools into the process. The tool helps draft the proposed rule and the corresponding Federal Register notice. After comments on a draft rule are received the tool can strategically analyze and summarize the comments as well as identify potential changes to the draft rule.
+
+This is a custom-built prototype tool specifically for the FAR/DFARS change process that helps the DPCAP team generate draft FAR/DFARS rules, review public comments, and make necessary changes for the final rule. 
