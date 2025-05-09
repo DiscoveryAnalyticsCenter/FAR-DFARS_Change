@@ -5,3 +5,9 @@ export function stripHTML(input: string) {
   str = str.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
   return str;
 } 
+
+export function decodeHTMLEntities(text: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+  return doc.documentElement.textContent;
+}

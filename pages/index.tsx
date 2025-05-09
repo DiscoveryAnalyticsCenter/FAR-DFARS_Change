@@ -41,7 +41,7 @@ export default function IndexPage(props: {firstProposalsPage: any}) {
     // const proposal = await res.data;
     // // setSelectedProposal(proposal)
   }
-  console.log(proposedRuleChangeData)
+  
   /**
    * Remove boilerplate prefixes from FAR titles.
    * @param title 

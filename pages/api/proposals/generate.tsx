@@ -3,6 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { generateProposal } from "@/lib/llm";
 
 export default async function Handler(req: NextApiRequest, res: NextApiResponse) {
-  const proposal = await generateProposal(req.body.NDAASection, req.body.year, req.body.selectedFARSection);
+  const proposal = await generateProposal(req.body.NDAASection, req.body.year, req.body.FARSection);
   res.status(200).json(proposal);
 }

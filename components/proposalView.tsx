@@ -6,7 +6,7 @@ import { Button } from "@heroui/button";
 import {Divider} from "@heroui/divider"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { stripHTML } from "@/lib/utils";
+import { stripHTML, decodeHTMLEntities } from "@/lib/utils";
 
 export default function ProposalView(props: {basicData: BasicProposalData}) {
   const [proposal, setProposal] = useState<Proposal | null>(null) 
@@ -51,6 +51,7 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
     </div>
     );
   }
+
   return (
     <div className="w-full h-full flex flex-col mx-5">
       <Modal isOpen={modalOpen} size="5xl" onClose={() => setModalOpen(false)}>
@@ -62,7 +63,7 @@ export default function ProposalView(props: {basicData: BasicProposalData}) {
                 {
                   proposal.comments[selectedCommentGroupIndex].comments.map((comment: string, index: number) => 
                     <>
-                      <p className="my-3">{comment}</p>
+                      <p className="my-3">{decodeHTMLEntities(comment)}</p>
                       {
                         index < proposal.comments[selectedCommentGroupIndex].comments.length - 1 &&
                         <Divider/>

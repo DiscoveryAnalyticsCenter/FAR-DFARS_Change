@@ -115,18 +115,24 @@ export async function generateRevision(summary: string) {
 }
 
 export async function generateProposal(NDAASection: string, year: string, FARSection: string) {
+
+  const prompt = `Take the text from the National Defense Authorization Act for Fiscal Year ${year} section ${NDAASection} and revise the Defense Federal Acquisition Regulation Supplement section ${FARSection}.
+          Maintain the same DFARS clause number and add or update sub clause numbers as necessary
+          Maintain the same DFARS clause title
+          Clarify under which conditions the clause applies, including specific contract types, dollar thresholds, or contractor classifications. These are not section headings nor sections, but necessary components.
+          Maintain and amend the requirements from the current DFARS clause. Include contractor responsibilities, compliance measures, reporting requirements, and procedures.
+          Maintain references to other relevant FAR, DFARS, or government regulations and add any new references needed as a result of the NDAA text.
+          If and only if there are any flow-down provisions that specify when the clause must be included in subcontracts and, if so, under what conditions include or add them. 
+          Format your response in HTML. Please ONLY include the contents of the proposed rule and NOTHING more in your response.
+          Additionally please format break up sections using HTML tags. (such as <br>). Furthermore please include bolded, larger font section and subsection headings in your response.
+          For section headings, please only use "scope", "definitions", "restrictions" as section headings, as well as an overall heading with the clause number and title`;
+
   let body = {
     "model": model,
     "messages": [
       {
         "role": "user",
-        "content": `Take the text from the National Defense Authorization Act for Fiscal Year ${year} section ${NDAASection} and revise the Defense Federal Acquisition Regulation Supplement section ${FARSection}.
-          Maintain the same DFARS clause number and add or update sub clause numbers as necessary
-          Maintain the same DFARS clause title
-          Clarify under which conditions the clause applies, including specific contract types, dollar thresholds, or contractor classifications.
-          Maintain and amend the requirements from the current DFARS clause. Include contractor responsibilities, compliance measures, reporting requirements, and procedures.
-          Maintain references to other relevant FAR, DFARS, or government regulations and add any new references needed as a result of the NDAA text.
-          If and only if there are any flow-down provisions that specify when the clause must be included in subcontracts and, if so, under what conditions include or add them. Format your response in HTML. Please ONLY include the contents of the proposed rule and NOTHING more in your response.`
+        "content": prompt
       },
     ],
     "temperature": temperature
@@ -140,19 +146,13 @@ export async function generateProposal(NDAASection: string, year: string, FARSec
   let output = await res.json();
   const proposal = output.choices[0].message.content;
 
+
   body = {
     "model": model,
     "messages": [
       {
         "role": "user",
-        "content": `Take the text from the National Defense Authorization Act for Fiscal Year ${year} section ${NDAASection} and revise the Defense Federal Acquisition Regulation Supplement section ${FARSection}.
-          Maintain the same DFARS clause number and add or update sub clause numbers as necessary
-          Maintain the same DFARS clause title
-          Clarify under which conditions the clause applies, including specific contract types, dollar thresholds, or contractor classifications.
-          Maintain and amend the requirements from the current DFARS clause. Include contractor responsibilities, compliance measures, reporting requirements, and procedures.
-          Maintain references to other relevant FAR, DFARS, or government regulations and add any new references needed as a result of the NDAA text.
-          If and only if there are any flow-down provisions that specify when the clause must be included in subcontracts and, if so, under what conditions include or add them. 
-          Format your response in HTML. Please ONLY include the contents of the proposed rule and NOTHING more in your response.`
+        "content": prompt
       },
       {
         "role": "assistant",
@@ -162,7 +162,9 @@ export async function generateProposal(NDAASection: string, year: string, FARSec
         "role": "user",
         "content": `Please provide a summary of the change, background of the change, 
           discussion and analysis of the change and expected impacts of the change to be published in the Federal Register. 
-          Please ONLY include the contents of the proposed rule and NOTHING more in your response.`
+          Format your response in HTML. Please ONLY include the contents of the summary, background, and analysis and NOTHING more in your response, which means no preface or header.
+          Do not include anything at the begimning of the text which is simialar to "Summary of the change"
+          Additionally please format break up sections using HTML tags. (such as <br>)`
       }
     ],
     "temperature": temperature

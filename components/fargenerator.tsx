@@ -15,14 +15,14 @@ export default function FARGenerator(props: {isOpen: boolean, onOpenChange: () =
     const [frs, setFRS] = useState<string>("");
     const [showingFRS, setShowingFRS] = useState<boolean>(false);
 
-    useEffect(() => {
-      setShowingFRS(false);
-      setSelectedNDAASection("");
-      setSelectedYear("");
-      setSelectedFARSection("");
-      setProposalLoading(false);
-      setProposal("");
-    }, [props.isOpen]);
+    // useEffect(() => {
+    //   setShowingFRS(false);
+    //   setSelectedNDAASection("");
+    //   setSelectedYear("");
+    //   setSelectedFARSection("");
+    //   setProposalLoading(false);
+    //   setProposal("");
+    // }, [props.isOpen]);
 
     async function generateProposal() {
       setProposalLoading(true);
@@ -63,6 +63,7 @@ export default function FARGenerator(props: {isOpen: boolean, onOpenChange: () =
     function toggleView() {
       setShowingFRS(!showingFRS);
     }
+
     
     return (
       <Modal isOpen={props.isOpen} size="5xl">
@@ -99,13 +100,13 @@ export default function FARGenerator(props: {isOpen: boolean, onOpenChange: () =
                   {
                     !proposalLoading && proposal.length > 0 && !showingFRS &&
                     <div className="w-full">
-                      <div className="w-full overflow-y-scroll pr-5" dangerouslySetInnerHTML={{ __html: proposal.substring(8, proposal.length-3) }} />
+                      <div className="w-full overflow-y-scroll pr-5 max-h-[50vh]" dangerouslySetInnerHTML={{ __html: proposal.substring(8, proposal.length-3) }} />
                     </div>
                   }
                   {
                     !proposalLoading && proposal.length > 0 && showingFRS &&
                     <div className="w-full">
-                      <div className="w-full overflow-y-scroll pr-5" dangerouslySetInnerHTML={{ __html: frs.substring(8, frs.length-3) }} />
+                      <div className="w-full overflow-y-scroll pr-5 max-h-[50vh]" dangerouslySetInnerHTML={{ __html: frs.substring(8, frs.length-3) }} />
                     </div>
                   }
                  
