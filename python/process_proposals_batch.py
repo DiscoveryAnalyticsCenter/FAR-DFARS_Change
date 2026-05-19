@@ -66,14 +66,14 @@ def process_json_file(input_file: str, output_file: str = None):
         
         # Process each match in this result
         for match_idx, match in enumerate(matches):
-            if match_idx > 0 and match_idx < 5:
-                pass
-            else:
-                continue
-            section_number = match.get('section_number')
+            # if match_idx > 0 and match_idx < 5:
+            #     pass
+            # else:
+            #     continue
+            section_number = match.get('section_number') or match.get('subpart')
             
             if not section_number:
-                print(f"  ⚠️  Warning: Match {match_idx} missing section_number, skipping")
+                print(f"  ⚠️  Warning: Match {match_idx} missing section_number and subpart, skipping")
                 continue
             
             processed_matches += 1
